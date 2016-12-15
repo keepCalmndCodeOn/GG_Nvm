@@ -1,0 +1,135 @@
+import java.util.HashMap;
+import java.util.Map;
+
+//LRU Cache
+
+class LRUCache {
+
+    Map<Integer,Node> lruMap = new HashMap<Integer,Node>();
+    Node lastInsert;
+    Node head;
+    int capacity;
+    
+    
+    public LRUCache(int n) {
+    	
+    	capacity = n;
+    }
+    
+    public void put(int data) {
+
+        if(lruMap.size() == 0) {
+
+            Node newNode = new Node(data);
+            lastInsert = newNode;
+            lruMap.put(data,newNode);
+            head = newNode;
+
+        }
+        else{
+            
+            Node present = lruMap.get(data);
+            
+            if(present != null){
+            
+            removeNode(present);
+            
+            }
+            else{
+            	
+            if(lruMap.size() == capacity){
+        	removeHead();
+            }
+            
+          }
+       
+            insertNewNode(data);
+       }
+
+    }
+    
+    private void removeNode(Node cur){
+    
+    	if(cur == head){
+    		removeHead();
+    	}
+    	else{
+    Node tmp = cur.prev;
+    tmp.next = cur.next;
+    cur.next.prev = tmp;
+    	}
+    }
+    
+    private void removeHead(){
+    	
+    	Node temp = head.next;
+        head = temp;
+        head.prev = null;
+    	
+    }
+    
+    public Node get(int data){
+    
+    return lruMap.get(data);
+    
+    }
+    
+    	private void insertNewNode(int data){
+            
+        
+            Node newNode = new Node(data);
+
+            lastInsert.next = newNode;
+
+            newNode.prev = lastInsert;
+
+            lruMap.put(data,newNode);
+
+            lastInsert = newNode;
+        
+    }
+    
+    public void printLRU(){
+    	
+    	while(lastInsert != null){
+    		
+    	System.out.println(lastInsert.data);
+    	lastInsert = lastInsert.prev;
+    	
+    	}
+    	
+    }
+
+public static void main(String args[]){
+		
+		LRUCache gg = new LRUCache(5);
+		
+		gg.put(1);
+		gg.put(2);
+		gg.put(3);
+		gg.put(4);
+		gg.put(2);
+		gg.put(3);
+		gg.put(5);
+		gg.put(6);
+		gg.put(3);
+		gg.put(2);
+		
+		gg.printLRU();
+	}
+}
+
+class Node{
+
+int data;
+Node next,prev;
+
+Node(int data){
+this.data = data;
+next= null;
+prev = null; 
+
+}
+
+
+}
